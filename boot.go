@@ -1,31 +1,40 @@
 package main
 
 import (
-	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui"
 	"github.com/sisyphsu/server-selector/core"
 )
 
 func main() {
 	// init ui
-	if err := ui.Init(); err != nil {
+	if err := termui.Init(); err != nil {
 		println("failed to initialize termui: ", err)
 		return
 	}
-	defer ui.Close()
+	defer termui.Close()
 
-	// init render
-	core.Render()
+	// init draw
+	core.Draw()
 
 	// event loop
-	uiEvents := ui.PollEvents()
-	for {
-		e := <-uiEvents
-		exit, update := core.HandleEvent(e)
+	termui.DefaultEvtStream.Hook(func(event termui.Event) {
+		var exit, update bool
+		switch event.Path {
+		case "/timer/1s":
+			update = true
+		case "/sys/wnd/resize":
+			update = true
+		case "/sys/kbd/C-c":
+			exit = true // control-c force exit
+		default:
+			exit, update = core.HandleEvent(event)
+		}
 		if exit {
-			break
+			termui.StopLoop() // close
 		}
 		if update {
-			core.Render()
+			core.Draw() // render
 		}
-	}
+	})
+	termui.Loop()
 }
