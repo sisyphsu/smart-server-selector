@@ -29,6 +29,9 @@ func main() {
 	table2.Y = 10
 	table2.X = 0
 	table2.Border = true
+	table2.BorderLabel = "servers"
+	table2.Width = termui.TermWidth()
+
 	offset := 0
 	termui.Render(table2)
 	termui.DefaultEvtStream.Hook(func(event termui.Event) {
@@ -45,6 +48,13 @@ func main() {
 			}
 			termui.Clear()
 			termui.Render(table2)
+		} else if event.Path == "/sys/wnd/resize" {
+			table2.Width = termui.TermWidth()
+
+			termui.Clear()
+			termui.Render(table2)
+		} else {
+			println(event.Path)
 		}
 	})
 
