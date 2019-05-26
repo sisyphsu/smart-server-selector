@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/cjbassi/drawille-go v0.1.0 // indirect
 	github.com/gizak/termui v2.3.0+incompatible
-	github.com/gizak/termui/v3 v3.0.0 // indirect
+	github.com/gizak/termui/v3 v3.0.0
 	github.com/maruel/panicparse v1.2.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/mum4k/termdash v0.9.1 // indirect

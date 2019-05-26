@@ -1,30 +1,31 @@
 package main
 
 import (
-	"github.com/gizak/termui"
+	ui "github.com/gizak/termui/v3"
 	"github.com/sisyphsu/server-selector/core"
 )
 
 func main() {
-	if err := termui.Init(); err != nil {
-		panic(err)
+	// init ui
+	if err := ui.Init(); err != nil {
+		println("failed to initialize termui: ", err)
+		return
 	}
-	defer termui.Close()
-	// init core
+	defer ui.Close()
 
-	// build layout
-	termui.Body.AddRows(
-		termui.NewRow(
-			termui.NewCol(6, 0, nil),
-			termui.NewCol(6, 0, nil)),
-		termui.NewRow(
-			termui.NewCol(3, 0, nil),
-			termui.NewCol(3, 0, nil),
-			termui.NewCol(6, 0, nil)))
+	// init render
+	core.Render()
 
-	// hook event
-	termui.DefaultEvtStream.Hook(core.EventHandler)
-
-	// loop
-	termui.Loop()
+	// event loop
+	uiEvents := ui.PollEvents()
+	for {
+		e := <-uiEvents
+		exit, update := core.HandleEvent(e)
+		if exit {
+			break
+		}
+		if update {
+			core.Render()
+		}
+	}
 }

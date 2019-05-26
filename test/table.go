@@ -1,62 +1,68 @@
 package main
 
 import (
-	"github.com/gizak/termui"
+	"log"
+
+	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
 )
 
 func main() {
-	err := termui.Init()
-	if err != nil {
-		panic(err)
+	if err := ui.Init(); err != nil {
+		log.Fatalf("failed to initialize termui: %v", err)
 	}
-	defer termui.Close()
+	defer ui.Close()
 
-	rows2 := [][]string{
+	table1 := widgets.NewTable()
+	table1.Rows = [][]string{
+		{"header1", "header2", "header3"},
+		{"你好吗", "Go-lang is so cool", "Im working on Ruby"},
+		{"2016", "10", "11"},
+	}
+	table1.TextStyle = ui.NewStyle(ui.ColorWhite)
+	table1.SetRect(0, 0, 60, 10)
+
+	ui.Render(table1)
+
+	table2 := widgets.NewTable()
+	table2.Rows = [][]string{
 		{"header1", "header2", "header3"},
 		{"Foundations", "Go-lang is so cool", "Im working on Ruby"},
 		{"2016", "11", "11"},
 	}
+	table2.TextStyle = ui.NewStyle(ui.ColorWhite)
+	table2.TextAlignment = ui.AlignCenter
+	table2.RowSeparator = false
+	table2.SetRect(0, 10, 20, 20)
 
-	table2 := termui.NewTable()
-	table2.Rows = rows2
-	table2.FgColor = termui.ColorGreen
-	table2.BgColor = termui.ColorDefault
-	table2.TextAlign = termui.AlignLeft
-	table2.Separator = false
-	table2.Analysis()
-	table2.SetSize()
-	table2.BgColors[2] = termui.ColorRed
-	table2.Y = 10
-	table2.X = 0
-	table2.Border = true
-	table2.BorderLabel = "servers"
-	table2.Width = termui.TermWidth()
+	ui.Render(table2)
 
-	offset := 0
-	termui.Render(table2)
-	termui.DefaultEvtStream.Hook(func(event termui.Event) {
-		if event.Path == "/sys/kbd/q" {
-			termui.StopLoop()
-		} else if event.Path == "/sys/kbd/<down>" {
-			offset = (offset + 1) % len(table2.Rows)
-			for i := range table2.BgColors {
-				if offset == i {
-					table2.BgColors[i] = termui.ColorRed
-				} else {
-					table2.BgColors[i] = termui.ColorDefault
-				}
-			}
-			termui.Clear()
-			termui.Render(table2)
-		} else if event.Path == "/sys/wnd/resize" {
-			table2.Width = termui.TermWidth()
+	table3 := widgets.NewTable()
+	table3.Rows = [][]string{
+		{"header1", "header2", "header3"},
+		{"AAA", "BBB", "CCC"},
+		{"DDD", "EEE", "FFF"},
+		{"GGG", "HHH", "III"},
+	}
+	table3.TextStyle = ui.NewStyle(ui.ColorWhite)
+	table3.RowSeparator = true
+	table3.BorderStyle = ui.NewStyle(ui.ColorGreen)
+	table3.SetRect(0, 30, 70, 20)
+	table3.FillRow = true
+	table3.RowStyles[0] = ui.NewStyle(ui.ColorWhite, ui.ColorBlack, ui.ModifierBold)
+	table3.RowStyles[2] = ui.NewStyle(ui.ColorWhite, ui.ColorRed, ui.ModifierBold)
+	table3.RowStyles[3] = ui.NewStyle(ui.ColorYellow)
 
-			termui.Clear()
-			termui.Render(table2)
-		} else {
-			println(event.Path)
+	ui.Render(table3)
+
+	uiEvents := ui.PollEvents()
+	for {
+		e := <-uiEvents
+		switch e.ID {
+		case "q", "<C-c>":
+			return
+		default:
+			println(e.Type, e.ID)
 		}
-	})
-
-	termui.Loop()
+	}
 }
