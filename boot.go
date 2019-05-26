@@ -15,6 +15,7 @@ func main() {
 
 	// init draw
 	core.Draw()
+	core.NewKeyword()
 
 	// event loop
 	termui.DefaultEvtStream.Hook(func(event termui.Event) {

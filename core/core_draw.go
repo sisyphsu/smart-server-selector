@@ -2,7 +2,6 @@ package core
 
 import (
 	"github.com/gizak/termui"
-	"time"
 )
 
 const sidebarWidth = 23
@@ -10,7 +9,7 @@ const sidebarWidth = 23
 // Draw refresh all ui
 func Draw() {
 	//termui.Clear()
-	termui.Render(drawLogo(), drawHints(), drawSearchbar(), drawServerTable())
+	termui.Render(drawLogo(), drawHints(), drawServerTable())
 }
 
 // draw server table
@@ -56,22 +55,22 @@ func drawLogo() (p *termui.Par) {
 	return
 }
 
-// draw the searchBar
-func drawSearchbar() (p *termui.Par) {
-	label := cxt.keyword
-	if time.Now().Second()%2 == 0 {
-		label += "▂"
-	}
-	p = termui.NewPar(label)
-	p.X = sidebarWidth
-	p.Height = 3
-	p.Width = termui.TermWidth() - sidebarWidth
-	p.TextFgColor = termui.ColorGreen
-	p.BorderLabel = "Search"
-	p.BorderLabelFg = termui.ColorCyan
-	p.BorderFg = termui.ColorCyan
-	return
-}
+//// draw the searchBar
+//func drawSearchbar() (p *termui.Par) {
+//	label := cxt.keyword
+//	if time.Now().Second()%2 == 0 {
+//		label += "▂"
+//	}
+//	p = termui.NewPar(label)
+//	p.X = sidebarWidth
+//	p.Height = 3
+//	p.Width = termui.TermWidth() - sidebarWidth
+//	p.TextFgColor = termui.ColorGreen
+//	p.BorderLabel = "Search"
+//	p.BorderLabelFg = termui.ColorCyan
+//	p.BorderFg = termui.ColorCyan
+//	return
+//}
 
 // draw hints
 func drawHints() (ls *termui.List) {
