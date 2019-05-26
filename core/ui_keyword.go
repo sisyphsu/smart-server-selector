@@ -10,10 +10,11 @@ import (
 type Keyword struct {
 	text   string
 	cursor string
+	ticker *time.Ticker
 	par    *termui.Par
 }
 
-func NewKeyword() {
+func NewKeyword() *Keyword {
 	k := new(Keyword)
 	k.text = ""
 	k.par = termui.NewPar("")
@@ -29,12 +30,14 @@ func NewKeyword() {
 
 	k.flush()
 	go k.setupCursorTimer()
+	return k
 }
 
 // setup cursor's timer
 func (k *Keyword) setupCursorTimer() {
-	ch := time.Tick(time.Second)
-	for range ch {
+	k.ticker = time.NewTicker(time.Second)
+	time.Tick(time.Second)
+	for range k.ticker.C {
 		if len(k.cursor) == 0 {
 			k.cursor = "▂"
 		} else {
@@ -58,6 +61,7 @@ func (k *Keyword) onInput(event termui.Event) {
 	default:
 		parts := strings.Split(event.Path, "/")
 		if l := len(parts); l > 0 && len(parts[l-1]) == 1 {
+			k.cursor = ""
 			k.setText(k.text + parts[l-1]) // input
 		}
 	}
@@ -73,4 +77,8 @@ func (k *Keyword) setText(text string) {
 func (k *Keyword) flush() {
 	k.par.Text = k.text + k.cursor
 	termui.Render(k.par)
+}
+
+func (k *Keyword) close() {
+	k.ticker.Stop()
 }
