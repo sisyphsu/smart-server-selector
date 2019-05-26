@@ -15,6 +15,8 @@ func main() {
 
 	// init draw
 	core.Draw()
+	core.NewAbout()
+	core.NewHints()
 	core.NewKeyword()
 
 	// event loop
