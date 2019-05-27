@@ -42,13 +42,11 @@ func NewServerTable(servers []server) *ServerTable {
 func (st *ServerTable) setKeyword(kw string) {
 	st.keyword = kw
 	st.flushVisible()
-	st.render()
 }
 
 func (st *ServerTable) setServers(ss []server) {
 	st.all = ss
 	st.flushVisible()
-	st.render()
 }
 
 func (st *ServerTable) onEvent(event ui.Event) {
@@ -70,7 +68,6 @@ func (st *ServerTable) onEvent(event ui.Event) {
 func (st *ServerTable) moveSelect(off int) {
 	l := len(st.visible)
 	st.selected = (st.selected + off + l) % l
-	st.render()
 }
 
 func (st *ServerTable) flushVisible() {
@@ -102,10 +99,7 @@ func (st *ServerTable) flushVisible() {
 	st.visible = result
 }
 
-func (st *ServerTable) render() {
-	if !Front {
-		return
-	}
+func (st *ServerTable) build() ui.Drawable {
 	var data = make([][]string, 0)
 	for i, server := range st.visible {
 		data = append(data, []string{server.env, server.host, server.desc})
@@ -123,6 +117,7 @@ func (st *ServerTable) render() {
 	}
 	st.table.SetRect(sidebarWidth, 3, termWidth(), termHeight())
 	st.table.Rows = data
+	st.table.ColumnWidths = []int{8, 16, termWidth() - sidebarWidth - 24}
 
-	ui.Render(st.table)
+	return st.table
 }

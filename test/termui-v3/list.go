@@ -47,7 +47,7 @@ func main() {
 		case "<C-d>":
 			l.ScrollHalfPageDown()
 		case "<C-u>":
-			l.ScrollHalfPageUp()
+			l.Rows = l.Rows[0 : len(l.Rows)-1]
 		case "<C-f>":
 			l.ScrollPageDown()
 		case "<C-b>":

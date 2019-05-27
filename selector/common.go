@@ -5,6 +5,8 @@ import (
 	"os/user"
 )
 
+const sidebarWidth = 23
+
 var configFile = ".sss"
 
 func init() {

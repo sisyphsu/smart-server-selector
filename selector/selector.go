@@ -2,15 +2,12 @@ package selector
 
 import (
 	ui "github.com/gizak/termui/v3"
-	"github.com/gizak/termui/v3/widgets"
 	"os"
 	"os/exec"
 )
 
-const sidebarWidth = 23
-
-var Exited bool
-var Front bool
+var Exited = false
+var Front = true
 var keyword *Keyword
 var serverTable *ServerTable
 
@@ -18,7 +15,7 @@ func Start() {
 	serverTable = NewServerTable(loadServers())
 	keyword = NewKeyword(serverTable.setKeyword)
 	// init render
-	render()
+	ui.Render(buildAbout(), buildHints(), keyword.build(), serverTable.build())
 
 	// loop event
 	uiEvents := ui.PollEvents()
@@ -35,6 +32,7 @@ func Start() {
 			default:
 				keyword.onEvent(e)
 				serverTable.onEvent(e)
+				ui.Render(buildAbout(), buildHints(), keyword.build(), serverTable.build())
 			}
 		}
 	}
@@ -43,41 +41,8 @@ func Start() {
 
 // render global
 func render() {
-	ui.Clear()
-
 	Front = true
-	renderAbout()
-	renderHints()
-	keyword.render()
-	serverTable.render()
-}
-
-// render about of sidebar
-func renderAbout() {
-	about := widgets.NewParagraph()
-	about.Title = "About"
-	about.TitleStyle.Fg = ui.ColorCyan
-	about.Text = "Smart Server Selector"
-	about.TextStyle.Fg = ui.ColorYellow
-	about.Border = true
-	about.BorderStyle.Fg = ui.ColorCyan
-	about.SetRect(0, 0, sidebarWidth, 3)
-
-	ui.Render(about)
-}
-
-// render hints of sidebar
-func renderHints() {
-	hints := widgets.NewList()
-	hints.Title = "Hints"
-	hints.TitleStyle.Fg = ui.ColorCyan
-	hints.Rows = hintsStr
-	hints.TextStyle.Fg = ui.ColorYellow
-	hints.Border = true
-	hints.BorderStyle.Fg = ui.ColorCyan
-	hints.SetRect(0, 3, sidebarWidth, termHeight())
-
-	ui.Render(hints)
+	ui.Render(buildAbout(), buildHints(), keyword.build(), serverTable.build())
 }
 
 // start configuration's editor
@@ -94,7 +59,8 @@ func startSSH(s server) {
 func execute(name string, args ...string) {
 	Front = false
 	ui.Clear()
-
+	ui.Render()
+	println("> ", name, args)
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -116,7 +82,6 @@ func exit(err error) {
 	if Exited {
 		return
 	}
-	ui.Clear()
 	if err != nil {
 		println("error: ", err)
 	}

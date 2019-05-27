@@ -25,7 +25,7 @@ import (
 	"github.com/gdamore/tcell"
 )
 
-func makebox(s tcell.Screen) {
+func makeboxBoxes(s tcell.Screen) {
 	w, h := s.Size()
 
 	if w == 0 || h == 0 {
@@ -105,7 +105,7 @@ loop:
 		case <-time.After(time.Millisecond * 50):
 		}
 		start := time.Now()
-		makebox(s)
+		makeboxBoxes(s)
 		cnt++
 		dur += time.Now().Sub(start)
 	}

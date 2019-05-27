@@ -3,7 +3,11 @@ module github.com/sisyphsu/server-selector
 go 1.12
 
 require (
+	github.com/abiosoft/ishell v2.0.0+incompatible // indirect
+	github.com/abiosoft/readline v0.0.0-20180607040430-155bce2042db // indirect
 	github.com/cjbassi/drawille-go v0.1.0 // indirect
+	github.com/fatih/color v1.7.0 // indirect
+	github.com/flynn-archive/go-shlex v0.0.0-20150515145356-3f9db97f8568 // indirect
 	github.com/gizak/termui v2.3.0+incompatible
 	github.com/gizak/termui/v3 v3.0.0
 	github.com/maruel/panicparse v1.2.0 // indirect
