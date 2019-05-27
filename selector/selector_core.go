@@ -1,53 +1,56 @@
 package selector
 
 import (
-	"github.com/gizak/termui"
-	"github.com/nsf/termbox-go"
+	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
 	"os"
 	"os/exec"
 )
 
 const sidebarWidth = 23
 
-var front bool
+var Exited bool
+var Front bool
 var keyword *Keyword
 var serverTable *ServerTable
 
 func Start() {
 	serverTable = NewServerTable(loadServers())
 	keyword = NewKeyword(serverTable.setKeyword)
-
-	// register shortcut
-	termui.Handle("/sys/wnd/resize", func(event termui.Event) {
-		if front {
-			render()
-		}
-	})
-	termui.Handle("/sys/kbd/C-c", func(event termui.Event) {
-		if front {
-			termui.StopLoop() // exit
-		}
-	})
-	termui.Handle("/sys/kbd/C-p", func(event termui.Event) {
-		if front {
-			front = false
-			// start editor
-			startEditor()
-			// recover to front
-			keyword.setText("")
-			render()
-		}
-	})
-
 	// init render
 	render()
+
+	// loop event
+	uiEvents := ui.PollEvents()
+	for !Exited {
+		e := <-uiEvents
+		if Front {
+			switch e.ID {
+			case "<C-c>":
+				exit(nil)
+			case "<Resize>":
+				render()
+			case "<C-p>":
+				Front = false
+				// start editor
+				startEditor()
+				// recover to Front
+				keyword.setText("")
+				render()
+			default:
+				keyword.onEvent(e)
+				serverTable.onEvent(e)
+			}
+		}
+	}
+
 }
 
 // render global
 func render() {
-	termui.Clear()
+	ui.Clear()
 
-	front = true
+	Front = true
 	renderAbout()
 	renderHints()
 	keyword.render()
@@ -56,36 +59,35 @@ func render() {
 
 // render about of sidebar
 func renderAbout() {
-	about := termui.NewPar("Smart Server Selector")
-	about.X = 0
-	about.Y = 0
-	about.Width = sidebarWidth
-	about.Height = 3
-	about.TextFgColor = termui.ColorYellow
-	about.BorderLabel = "About"
-	about.BorderLabelFg = termui.ColorCyan
-	about.BorderFg = termui.ColorCyan
-	termui.Render(about)
+	about := widgets.NewParagraph()
+	about.Title = "About"
+	about.TitleStyle.Fg = ui.ColorCyan
+	about.Text = "Smart Server Selector"
+	about.TextStyle.Fg = ui.ColorCyan
+	about.Border = true
+	about.BorderStyle.Fg = ui.ColorCyan
+	about.SetRect(0, 0, sidebarWidth, 3)
+
+	ui.Render(about)
 }
 
 // render hints of sidebar
 func renderHints() {
-	hints := termui.NewList()
-	hints.Items = hintsStr
-	hints.ItemFgColor = termui.ColorYellow
-	hints.BorderLabel = "Hints"
-	hints.BorderLabelFg = termui.ColorCyan
-	hints.BorderFg = termui.ColorCyan
-	hints.X = 0
-	hints.Y = 3
-	hints.Width = sidebarWidth
-	hints.Height = termui.TermHeight() - 3
-	termui.Render(hints)
+	hints := widgets.NewList()
+	hints.Title = "Hints"
+	hints.TitleStyle.Fg = ui.ColorCyan
+	hints.Rows = hintsStr
+	hints.TextStyle.Fg = ui.ColorYellow
+	hints.Border = true
+	hints.BorderStyle.Fg = ui.ColorCyan
+	hints.SetRect(0, 3, sidebarWidth, termHeight())
+
+	ui.Render(hints)
 }
 
 // start configuration's editor
 func startEditor() {
-	termui.Clear()
+	ui.Clear()
 
 	cmd := exec.Command("vim", "~/test.txt")
 	cmd.Stdin = os.Stdin
@@ -94,16 +96,19 @@ func startEditor() {
 	if err != nil {
 		exit(err)
 	}
-	if err = termbox.Init(); err != nil {
+	if err = ui.Init(); err != nil {
 		exit(err)
 	}
 }
 
 // exit
 func exit(err error) {
+	if Exited {
+		return
+	}
+	ui.Clear()
 	if err != nil {
 		println("error: ", err)
 	}
-	termui.StopLoop()
-	os.Exit(99)
+	Exited = true
 }

@@ -1,6 +1,9 @@
 package selector
 
-import "github.com/gizak/termui"
+import (
+	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
+)
 
 type server struct {
 	env  string
@@ -14,24 +17,23 @@ type ServerTable struct {
 	serverVisible  []server
 	serverAll      []server
 
-	table *termui.Table
+	table *widgets.Table
 }
 
 func NewServerTable(servers []server) *ServerTable {
 	st := new(ServerTable)
-	st.table = termui.NewTable()
-	st.table.Separator = false
+	st.table = widgets.NewTable()
+	st.table.RowSeparator = false
+	st.table.Title = "Servers"
+	st.table.TitleStyle.Fg = ui.ColorCyan
+	st.table.TextAlignment = ui.AlignLeft
+	st.table.TextStyle.Fg = ui.ColorGreen
 	st.table.Border = true
-	st.table.BorderLabel = "Servers"
-	st.table.BorderLabelFg = termui.ColorCyan
-	st.table.FgColor = termui.ColorGreen
-	st.table.BgColor = termui.ColorDefault
-	st.table.TextAlign = termui.AlignLeft
-	st.table.BorderFg = termui.ColorCyan
+	st.table.BorderStyle.Fg = ui.ColorCyan
 
 	st.serverAll = servers
 
-	termui.Handle("/sys/kbd", st.onShortcut)
+	//termui.Handle("/sys/kbd", st.onEvent)
 
 	return st
 }
@@ -41,43 +43,38 @@ func (st *ServerTable) setKeyword(kw string) {
 	st.render()
 }
 
-func (st *ServerTable) onShortcut(event termui.Event) {
-	if !front {
+func (st *ServerTable) onEvent(event ui.Event) {
+	if !Front {
 		return
 	}
-	switch event.Path {
-	case "/sys/kbd/<down>": // select down
+	switch event.ID {
+	case "<Down>": // select down
 
-	case "/sys/kbd/<up>": // select up
+	case "<Up>": // select up
 
-	case "/sys/kbd/<enter>": // confirm, ok
+	case "<Tab>": // select next option
 
-	case "/sys/kbd/<tab>": // select next option
+	case "<Enter>": // confirm, ok
 
 	}
 }
 
 func (st *ServerTable) render() {
-	if !front {
+	if !Front {
 		return
 	}
 	var data [][]string
 	for _, server := range st.serverAll {
 		data = append(data, []string{server.env, server.host, server.desc})
 	}
-	st.table.X = sidebarWidth
-	st.table.Y = 3
+	st.table.SetRect(sidebarWidth, 3, termWidth(), termHeight())
 	st.table.Rows = data
-	st.table.Analysis()
-	st.table.SetSize()
-	st.table.Width = termui.TermWidth() - sidebarWidth
 	// handle selected
 	for i, row := range data {
 		if row[1] != st.serverSelected {
 			continue
 		}
-		st.table.BgColors[i] = termui.ColorRed
-		st.table.FgColors[i] = termui.ColorYellow
+		st.table.RowStyles[i] = ui.Style{Bg: ui.ColorRed, Fg: ui.ColorYellow}
 	}
-	termui.Render(st.table)
+	ui.Render(st.table)
 }

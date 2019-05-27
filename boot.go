@@ -1,21 +1,17 @@
 package main
 
 import (
-	"github.com/gizak/termui"
+	ui "github.com/gizak/termui/v3"
 	"github.com/sisyphsu/server-selector/selector"
 )
 
 func main() {
 	// init ui
-	if err := termui.Init(); err != nil {
+	if err := ui.Init(); err != nil {
 		println("failed to initialize termui: ", err)
-		return
 	}
-	defer termui.Close()
+	defer ui.Close()
 
 	// init draw
-	go selector.Start()
-
-	// loop ui
-	termui.Loop()
+	selector.Start()
 }

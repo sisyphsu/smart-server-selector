@@ -1,5 +1,9 @@
 package selector
 
+import (
+	ui "github.com/gizak/termui/v3"
+)
+
 var hintsStr = []string{
 	"  [Ctrl+C] exit",
 	"  [Ctrl+P] edit",
@@ -13,7 +17,7 @@ var hintsStr = []string{
 }
 
 var testServers = []server{
-	{"test", "172.10.10.130", "admin,front,user"},
+	{"test", "172.10.10.130", "admin,Front,user"},
 	{"test", "172.10.10.131", "trade,user,mysql"},
 	{"test", "172.10.10.132", "trade,redis,zookeeper"},
 	{"pre", "172.10.40.45", "admin"},
@@ -28,4 +32,16 @@ var testServers = []server{
 
 func loadServers() []server {
 	return testServers
+}
+
+var EventHandler []func(ui.Event)
+
+func termWidth() int {
+	w, _ := ui.TerminalDimensions()
+	return w
+}
+
+func termHeight() int {
+	_, h := ui.TerminalDimensions()
+	return h
 }

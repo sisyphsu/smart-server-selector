@@ -1,7 +1,8 @@
 package selector
 
 import (
-	"github.com/gizak/termui"
+	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
 	"regexp"
 	"strings"
 	"time"
@@ -18,7 +19,7 @@ type Keyword struct {
 	text     string
 	cursor   string
 	ticker   *time.Ticker
-	par      *termui.Par
+	input    *widgets.Paragraph
 	onChange func(string)
 }
 
@@ -26,19 +27,16 @@ func NewKeyword(onChange func(string)) *Keyword {
 	k := new(Keyword)
 	k.onChange = onChange
 	k.text = ""
-	k.par = termui.NewPar("")
-	k.par.X = sidebarWidth
-	k.par.Y = 0
-	k.par.Width = termui.TermWidth() - sidebarWidth
-	k.par.Height = 3
-	k.par.TextFgColor = termui.ColorRed
-	k.par.BorderLabel = "Search"
-	k.par.BorderLabelFg = termui.ColorCyan
-	k.par.BorderFg = termui.ColorCyan
-
-	termui.Handle("/sys/kbd", k.onInput)
+	k.input = widgets.NewParagraph()
+	k.input.Title = "Search"
+	k.input.TitleStyle.Fg = ui.ColorCyan
+	k.input.Border = true
+	k.input.Text = ""
+	k.input.TextStyle.Fg = ui.ColorRed
+	k.input.BorderStyle.Fg = ui.ColorCyan
 
 	go k.setupCursorTimer()
+
 	return k
 }
 
@@ -57,24 +55,24 @@ func (k *Keyword) setupCursorTimer() {
 }
 
 // handle Keyword's input logic
-func (k *Keyword) onInput(event termui.Event) {
-	if !front {
+func (k *Keyword) onEvent(event ui.Event) {
+	if !Front {
 		return
 	}
-	switch event.Path {
-	case "/sys/kbd/<escape>":
+	switch event.ID {
+	case "<Escape>":
 		if l := len(k.text); l > 0 {
 			k.setText("") // clear keyword
 		}
-	case "/sys/kbd/<backspace>", "/sys/kbd/<delete>", "/sys/kbd/C-8":
+	case "<Backspace>", "<Delete>", "<C-8>":
 		if l := len(k.text); l > 0 {
 			k.setText(k.text[:l-1]) // delete one keyword
 		}
-	case "/sys/kbd/<space>":
+	case "<Space>":
 		k.cursor = ""
 		k.setText(k.text + " ") // input
 	default:
-		parts := strings.Split(event.Path, "/")
+		parts := strings.Split(event.ID, "/")
 		if l := len(parts); l > 0 && len(parts[l-1]) == 1 && letter.MatchString(parts[l-1]) {
 			k.cursor = ""
 			k.setText(k.text + parts[l-1]) // input
@@ -93,10 +91,10 @@ func (k *Keyword) setText(text string) {
 
 // render redraw the keyword widget
 func (k *Keyword) render() {
-	if front {
-		k.par.Width = termui.TermWidth() - sidebarWidth
-		k.par.Text = k.text + k.cursor
-		termui.Render(k.par)
+	if Front {
+		k.input.Text = k.text + k.cursor
+		k.input.SetRect(sidebarWidth, 0, termWidth(), 3)
+		ui.Render(k.input)
 	}
 }
 
