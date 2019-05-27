@@ -17,17 +17,17 @@ var hintsStr = []string{
 }
 
 var testServers = []server{
-	{"test", "172.10.10.130", "admin,Front,user"},
-	{"test", "172.10.10.131", "trade,user,mysql"},
-	{"test", "172.10.10.132", "trade,redis,zookeeper"},
-	{"pre", "172.10.40.45", "admin"},
-	{"pre", "172.10.40.46", "user, trade"},
-	{"pre", "172.10.40.47", "trade, search"},
-	{"prod", "172.10.40.203", "admin"},
-	{"prod", "172.10.40.204", "user"},
-	{"prod", "172.10.40.205", "user, search"},
-	{"prod", "172.10.40.206", "trade, search"},
-	{"prod", "172.10.40.207", "trade"},
+	{env: "test", host: "172.10.10.130", desc: "admin,Front,user"},
+	{env: "test", host: "172.10.10.131", desc: "trade,user,mysql"},
+	{env: "test", host: "172.10.10.132", desc: "trade,redis,zookeeper"},
+	{env: "pre", host: "172.10.40.45", desc: "admin"},
+	{env: "pre", host: "172.10.40.46", desc: "user, trade"},
+	{env: "pre", host: "172.10.40.47", desc: "trade, search"},
+	{env: "prod", host: "172.10.40.203", desc: "admin"},
+	{env: "prod", host: "172.10.40.204", desc: "user"},
+	{env: "prod", host: "172.10.40.205", desc: "user, search"},
+	{env: "prod", host: "172.10.40.206", desc: "trade, search"},
+	{env: "prod", host: "172.10.40.207", desc: "trade"},
 }
 
 func loadServers() []server {
@@ -44,4 +44,21 @@ func termWidth() int {
 func termHeight() int {
 	_, h := ui.TerminalDimensions()
 	return h
+}
+
+type servers []server
+
+func (a servers) Len() int      { return len(a) }
+func (a servers) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a servers) Less(i, j int) bool {
+	if a[i].score != a[j].score {
+		return a[i].score < a[j].score
+	}
+	if a[i].env != a[j].env {
+		return a[i].env < a[j].env
+	}
+	if a[i].host != a[j].host {
+		return a[i].host < a[j].host
+	}
+	return i < j
 }
