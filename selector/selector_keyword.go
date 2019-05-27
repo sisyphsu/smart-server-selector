@@ -5,7 +5,6 @@ import (
 	"github.com/gizak/termui/v3/widgets"
 	"regexp"
 	"strings"
-	"time"
 )
 
 var letter *regexp.Regexp
@@ -18,7 +17,6 @@ func init() {
 type Keyword struct {
 	text     string
 	cursor   string
-	ticker   *time.Ticker
 	input    *widgets.Paragraph
 	onChange func(string)
 }
@@ -35,23 +33,7 @@ func NewKeyword(onChange func(string)) *Keyword {
 	k.input.TextStyle.Fg = ui.ColorRed
 	k.input.BorderStyle.Fg = ui.ColorCyan
 
-	go k.setupCursorTimer()
-
 	return k
-}
-
-// setup cursor's timer
-func (k *Keyword) setupCursorTimer() {
-	k.ticker = time.NewTicker(time.Second)
-	time.Tick(time.Second)
-	for range k.ticker.C {
-		if len(k.cursor) == 0 {
-			k.cursor = "▂"
-		} else {
-			k.cursor = ""
-		}
-		k.render()
-	}
 }
 
 // handle Keyword's input logic
@@ -96,8 +78,4 @@ func (k *Keyword) render() {
 		k.input.SetRect(sidebarWidth, 0, termWidth(), 3)
 		ui.Render(k.input)
 	}
-}
-
-func (k *Keyword) close() {
-	k.ticker.Stop()
 }

@@ -104,7 +104,7 @@ func (st *ServerTable) render() {
 	if !Front {
 		return
 	}
-	var data [][]string
+	var data = make([][]string, 0)
 	for i, server := range st.visible {
 		data = append(data, []string{server.env, server.host, server.desc})
 		if st.selected == i {
@@ -112,6 +112,9 @@ func (st *ServerTable) render() {
 		} else {
 			st.table.RowStyles[i] = ui.Style{Bg: ui.ColorClear, Fg: ui.ColorGreen, Modifier: ui.ModifierClear}
 		}
+	}
+	if len(data) == 0 {
+		data = append(data, []string{""})
 	}
 	st.table.SetRect(sidebarWidth, 3, termWidth(), termHeight())
 	st.table.Rows = data
