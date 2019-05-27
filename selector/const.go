@@ -1,4 +1,4 @@
-package core
+package selector
 
 var hintsStr = []string{
 	"  [Ctrl+C] exit",

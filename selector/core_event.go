@@ -1,4 +1,4 @@
-package core
+package selector
 
 import (
 	"github.com/gizak/termui"

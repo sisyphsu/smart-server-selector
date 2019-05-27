@@ -1,12 +1,6 @@
-package core
+package selector
 
 var cxt context
-
-type server struct {
-	env  string
-	host string
-	desc string
-}
 
 type context struct {
 	keyword        string

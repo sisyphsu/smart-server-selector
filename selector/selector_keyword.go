@@ -1,4 +1,4 @@
-package core
+package selector
 
 import (
 	"github.com/gizak/termui"
@@ -8,19 +8,22 @@ import (
 
 // Keyword wrap keyword's input and render
 type Keyword struct {
-	text   string
-	cursor string
-	ticker *time.Ticker
-	par    *termui.Par
+	text     string
+	cursor   string
+	ticker   *time.Ticker
+	par      *termui.Par
+	onChange func(string)
 }
 
-func NewKeyword() *Keyword {
+func NewKeyword(onChange func(string)) *Keyword {
 	k := new(Keyword)
+	k.onChange = onChange
 	k.text = ""
 	k.par = termui.NewPar("")
 	k.par.X = sidebarWidth
-	k.par.Height = 3
+	k.par.Y = 0
 	k.par.Width = termui.TermWidth() - sidebarWidth
+	k.par.Height = 3
 	k.par.TextFgColor = termui.ColorRed
 	k.par.BorderLabel = "Search"
 	k.par.BorderLabelFg = termui.ColorCyan
@@ -28,7 +31,6 @@ func NewKeyword() *Keyword {
 
 	termui.Handle("/sys/kbd", k.onInput)
 
-	k.flush()
 	go k.setupCursorTimer()
 	return k
 }
@@ -43,12 +45,15 @@ func (k *Keyword) setupCursorTimer() {
 		} else {
 			k.cursor = ""
 		}
-		k.flush()
+		k.render()
 	}
 }
 
 // handle Keyword's input logic
 func (k *Keyword) onInput(event termui.Event) {
+	if !front {
+		return
+	}
 	switch event.Path {
 	case "/sys/kbd/<escape>":
 		if l := len(k.text); l > 0 {
@@ -67,16 +72,22 @@ func (k *Keyword) onInput(event termui.Event) {
 	}
 }
 
-// update keyword's text
+// render keyword's text
 func (k *Keyword) setText(text string) {
 	k.text = text
-	k.flush()
+	k.render()
+	if k.onChange != nil {
+		k.onChange(text)
+	}
 }
 
-// flush redraw the keyword widget
-func (k *Keyword) flush() {
-	k.par.Text = k.text + k.cursor
-	termui.Render(k.par)
+// render redraw the keyword widget
+func (k *Keyword) render() {
+	if front {
+		k.par.Width = termui.TermWidth() - sidebarWidth
+		k.par.Text = k.text + k.cursor
+		termui.Render(k.par)
+	}
 }
 
 func (k *Keyword) close() {

@@ -1,6 +1,12 @@
-package core
+package selector
 
 import "github.com/gizak/termui"
+
+type server struct {
+	env  string
+	host string
+	desc string
+}
 
 type ServerTable struct {
 	keyword        string
@@ -11,11 +17,9 @@ type ServerTable struct {
 	table *termui.Table
 }
 
-func NewServerTable() *ServerTable {
+func NewServerTable(servers []server) *ServerTable {
 	st := new(ServerTable)
 	st.table = termui.NewTable()
-	st.table.X = sidebarWidth
-	st.table.Y = 3
 	st.table.Separator = false
 	st.table.Border = true
 	st.table.BorderLabel = "Servers"
@@ -25,25 +29,26 @@ func NewServerTable() *ServerTable {
 	st.table.TextAlign = termui.AlignLeft
 	st.table.BorderFg = termui.ColorCyan
 
-	st.serverAll = loadServers() // can't change
+	st.serverAll = servers
 
 	return st
 }
 
-func (st *ServerTable) SetKeyword(kw string) {
+func (st *ServerTable) setKeyword(kw string) {
 	st.keyword = kw
-	st.update()
+	st.render()
 }
 
-func (st *ServerTable) SetActive(server string) {
-	st.serverSelected = server
-}
-
-func (st *ServerTable) update() {
+func (st *ServerTable) render() {
+	if !front {
+		return
+	}
 	var data [][]string
 	for _, server := range st.serverAll {
 		data = append(data, []string{server.env, server.host, server.desc})
 	}
+	st.table.X = sidebarWidth
+	st.table.Y = 3
 	st.table.Rows = data
 	st.table.Analysis()
 	st.table.SetSize()

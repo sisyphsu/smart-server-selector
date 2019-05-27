@@ -1,10 +1,8 @@
-package core
+package selector
 
 import (
 	"github.com/gizak/termui"
 )
-
-const sidebarWidth = 23
 
 // Draw refresh all ui
 func Draw() {
