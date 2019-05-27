@@ -31,12 +31,30 @@ func NewServerTable(servers []server) *ServerTable {
 
 	st.serverAll = servers
 
+	termui.Handle("/sys/kbd", st.onShortcut)
+
 	return st
 }
 
 func (st *ServerTable) setKeyword(kw string) {
 	st.keyword = kw
 	st.render()
+}
+
+func (st *ServerTable) onShortcut(event termui.Event) {
+	if !front {
+		return
+	}
+	switch event.Path {
+	case "/sys/kbd/<down>": // select down
+
+	case "/sys/kbd/<up>": // select up
+
+	case "/sys/kbd/<enter>": // confirm, ok
+
+	case "/sys/kbd/<tab>": // select next option
+
+	}
 }
 
 func (st *ServerTable) render() {
@@ -55,7 +73,7 @@ func (st *ServerTable) render() {
 	st.table.Width = termui.TermWidth() - sidebarWidth
 	// handle selected
 	for i, row := range data {
-		if row[1] != cxt.serverSelected {
+		if row[1] != st.serverSelected {
 			continue
 		}
 		st.table.BgColors[i] = termui.ColorRed

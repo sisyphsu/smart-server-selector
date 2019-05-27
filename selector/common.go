@@ -25,3 +25,7 @@ var testServers = []server{
 	{"prod", "172.10.40.206", "trade, search"},
 	{"prod", "172.10.40.207", "trade"},
 }
+
+func loadServers() []server {
+	return testServers
+}

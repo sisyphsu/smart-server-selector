@@ -2,9 +2,16 @@ package selector
 
 import (
 	"github.com/gizak/termui"
+	"regexp"
 	"strings"
 	"time"
 )
+
+var letter *regexp.Regexp
+
+func init() {
+	letter, _ = regexp.Compile("\\w")
+}
 
 // Keyword wrap keyword's input and render
 type Keyword struct {
@@ -63,9 +70,12 @@ func (k *Keyword) onInput(event termui.Event) {
 		if l := len(k.text); l > 0 {
 			k.setText(k.text[:l-1]) // delete one keyword
 		}
+	case "/sys/kbd/<space>":
+		k.cursor = ""
+		k.setText(k.text + " ") // input
 	default:
 		parts := strings.Split(event.Path, "/")
-		if l := len(parts); l > 0 && len(parts[l-1]) == 1 {
+		if l := len(parts); l > 0 && len(parts[l-1]) == 1 && letter.MatchString(parts[l-1]) {
 			k.cursor = ""
 			k.setText(k.text + parts[l-1]) // input
 		}

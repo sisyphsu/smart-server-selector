@@ -1,6 +1,11 @@
 package selector
 
-import "github.com/gizak/termui"
+import (
+	"github.com/gizak/termui"
+	"github.com/nsf/termbox-go"
+	"os"
+	"os/exec"
+)
 
 const sidebarWidth = 23
 
@@ -27,7 +32,10 @@ func Start() {
 		if front {
 			front = false
 			// start editor
-			// reload servers
+			startEditor()
+			// recover to front
+			keyword.setText("")
+			render()
 		}
 	})
 
@@ -73,4 +81,29 @@ func renderHints() {
 	hints.Width = sidebarWidth
 	hints.Height = termui.TermHeight() - 3
 	termui.Render(hints)
+}
+
+// start configuration's editor
+func startEditor() {
+	termui.Clear()
+
+	cmd := exec.Command("vim", "~/test.txt")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	if err != nil {
+		exit(err)
+	}
+	if err = termbox.Init(); err != nil {
+		exit(err)
+	}
+}
+
+// exit
+func exit(err error) {
+	if err != nil {
+		println("error: ", err)
+	}
+	termui.StopLoop()
+	os.Exit(99)
 }

@@ -9,7 +9,7 @@ require (
 	github.com/maruel/panicparse v1.2.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/mum4k/termdash v0.9.1 // indirect
-	github.com/nsf/termbox-go v0.0.0-20190325093121-288510b9734e // indirect
+	github.com/nsf/termbox-go v0.0.0-20190325093121-288510b9734e
 	github.com/rivo/tview v0.0.0-20190515161233-bd836ef13b4b // indirect
 	golang.org/x/arch v0.0.0-20190312162104-788fe5ffcd8c // indirect
 	golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f // indirect
