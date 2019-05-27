@@ -2,7 +2,15 @@ package selector
 
 import (
 	ui "github.com/gizak/termui/v3"
+	"os/user"
 )
+
+var configFile = ".sss"
+
+func init() {
+	u, _ := user.Current()
+	configFile = u.HomeDir + "/" + configFile
+}
 
 var hintsStr = []string{
 	"  [Ctrl+C] exit",

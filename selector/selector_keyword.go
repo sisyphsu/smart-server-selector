@@ -32,6 +32,7 @@ func NewKeyword(onChange func(string)) *Keyword {
 	k.input.Text = ""
 	k.input.TextStyle.Fg = ui.ColorRed
 	k.input.BorderStyle.Fg = ui.ColorCyan
+	k.input.PaddingLeft = 1
 
 	return k
 }

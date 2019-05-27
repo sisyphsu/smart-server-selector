@@ -61,7 +61,9 @@ func (st *ServerTable) onEvent(event ui.Event) {
 	case "<Up>": // select up
 		st.moveSelect(-1)
 	case "<Enter>": // confirm, ok
-
+		if st.selected < len(st.visible) {
+			startSSH(st.visible[st.selected])
+		}
 	}
 }
 
@@ -115,6 +117,9 @@ func (st *ServerTable) render() {
 	}
 	if len(data) == 0 {
 		data = append(data, []string{""})
+	}
+	if maxRow := termHeight() - 3; len(data) > maxRow {
+		data = data[:maxRow]
 	}
 	st.table.SetRect(sidebarWidth, 3, termWidth(), termHeight())
 	st.table.Rows = data

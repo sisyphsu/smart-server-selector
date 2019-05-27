@@ -31,12 +31,7 @@ func Start() {
 			case "<Resize>":
 				render()
 			case "<C-p>":
-				Front = false
-				// start editor
 				startEditor()
-				// recover to Front
-				keyword.setText("")
-				render()
 			default:
 				keyword.onEvent(e)
 				serverTable.onEvent(e)
@@ -63,7 +58,7 @@ func renderAbout() {
 	about.Title = "About"
 	about.TitleStyle.Fg = ui.ColorCyan
 	about.Text = "Smart Server Selector"
-	about.TextStyle.Fg = ui.ColorCyan
+	about.TextStyle.Fg = ui.ColorYellow
 	about.Border = true
 	about.BorderStyle.Fg = ui.ColorCyan
 	about.SetRect(0, 0, sidebarWidth, 3)
@@ -87,9 +82,20 @@ func renderHints() {
 
 // start configuration's editor
 func startEditor() {
+	execute("vim", configFile)
+}
+
+// start ssh
+func startSSH(s server) {
+	execute("ssh", s.host)
+}
+
+// execute the specified command
+func execute(name string, args ...string) {
+	Front = false
 	ui.Clear()
 
-	cmd := exec.Command("vim", "~/test.txt")
+	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	err := cmd.Run()
@@ -99,6 +105,10 @@ func startEditor() {
 	if err = ui.Init(); err != nil {
 		exit(err)
 	}
+
+	// recover to Front
+	keyword.setText("")
+	render()
 }
 
 // exit
