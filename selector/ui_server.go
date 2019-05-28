@@ -1,9 +1,7 @@
 package selector
 
 import (
-	"fmt"
 	"github.com/gdamore/tcell"
-	"github.com/mattn/go-runewidth"
 	"github.com/rivo/tview"
 	"sort"
 	"strings"
@@ -11,10 +9,11 @@ import (
 
 type ServersUI struct {
 	flex *tview.Flex
-	rows []*tview.TextView
+	rows []*row
 
 	offset  int
 	keyword string
+	kws     []string
 	visible []server
 	all     []server
 }
@@ -92,19 +91,20 @@ func (s *ServersUI) flushVisible() {
 	sort.Sort(serverArray(result))
 
 	s.visible = result
+	s.kws = kws
 }
 
 func (s *ServersUI) flushRows() {
 	_, _, _, height := s.flex.GetInnerRect()
 	for l := len(s.rows); l > height; {
 		l--
-		s.flex.RemoveItem(s.rows[l])
+		s.flex.RemoveItem(s.rows[l].flex)
 		s.rows = s.rows[:l]
 	}
 	for l := len(s.rows); l < height; {
 		l++
-		newRow := tview.NewTextView().SetDynamicColors(true)
-		s.flex.AddItem(newRow, 1, 0, false)
+		newRow := newRow()
+		s.flex.AddItem(newRow.flex, 1, 0, false)
 		s.rows = append(s.rows, newRow)
 	}
 }
@@ -119,30 +119,12 @@ func (s *ServersUI) render() {
 		offset = rowNum - 1
 	}
 	for i, row := range s.rows {
-		if i >= len(servers) {
-			row.SetBackgroundColor(tcell.ColorDefault)
-			row.SetText("")
-			continue
+		var selected = i == offset
+		var curr *server
+		if i < len(servers) {
+			tmp := servers[i]
+			curr = &tmp
 		}
-		if i == offset {
-			row.SetBackgroundColor(tcell.ColorBlue)
-		} else {
-			row.SetBackgroundColor(tcell.ColorDefault)
-		}
-		s := servers[i]
-		env := forceWidth(s.env, 6)
-		host := forceWidth(s.host, 16)
-		user := forceWidth(s.user, 10)
-		port := forceWidth(s.port, 6)
-		desc := s.desc
-		row.SetText(fmt.Sprintf(" [green]%v %v %v %v %v", env, host, user, port, desc))
-	}
-}
-
-func forceWidth(s string, w int) string {
-	if l := len(s); l <= w {
-		return runewidth.FillRight(s, w)
-	} else {
-		return s
+		row.render(curr, selected, s.kws)
 	}
 }
