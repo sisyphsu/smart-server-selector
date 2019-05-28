@@ -37,26 +37,27 @@ func (s *ServersUI) onEvent(event *tcell.EventKey) bool {
 	l := len(s.visible)
 	switch event.Key() {
 	case tcell.KeyDown, tcell.KeyTab, tcell.KeyPgDn: // select down
-		s.offset = (s.offset + 1 + l) % l
-		s.render()
+		s.selectOffset((s.offset + 1 + l) % l)
 		return true
 	case tcell.KeyUp, tcell.KeyBacktab, tcell.KeyPgUp: // select up
-		s.offset = (s.offset - 1 + l) % l
-		s.render()
+		s.selectOffset((s.offset - 1 + l) % l)
 		return true
 	}
 	return false
 }
 
 func (s *ServersUI) setKeyword(kw string) {
-	s.offset = 0
 	s.keyword = kw
-	s.render()
+	s.selectOffset(0)
 }
 
 func (s *ServersUI) setServers(all []server) {
-	s.offset = 0
 	s.all = all
+	s.selectOffset(0)
+}
+
+func (s *ServersUI) selectOffset(off int) {
+	s.offset = off
 	s.render()
 }
 

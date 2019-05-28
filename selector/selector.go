@@ -1,8 +1,8 @@
 package selector
 
 import (
+	"fmt"
 	"github.com/gdamore/tcell"
-	ui "github.com/gizak/termui/v3"
 	"github.com/rivo/tview"
 	"os"
 	"os/exec"
@@ -12,7 +12,6 @@ var app *tview.Application
 var view *ServersUI
 
 var exitFlag = 0
-var serverActived *server
 
 // Start the selector's render loop
 func Start(a *tview.Application) {
@@ -46,14 +45,10 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 	case tcell.KeyCtrlP:
 		execute("vim", configFile) // open editor
 	case tcell.KeyEnter:
-		if serverActived != nil {
-			execute("ssh", serverActived.host) // start ssh
+		if view.offset < len(view.visible) {
+			s := view.visible[view.offset]
+			execute("ssh", s.host) // start ssh
 		}
-	default:
-		// to keyword and server table
-		//keyword.onEvent(e)
-		//serverTable.onEvent(e)
-		//ui.Render(buildAboutUI(), buildTipsUI(), keyword.build(), serverTable.build())
 	}
 	if exitFlag > 2 {
 		app.Stop()
@@ -62,26 +57,30 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 	return event
 }
 
-// render global
-func render() {
-}
-
 // execute the specified command
 func execute(name string, args ...string) {
 	app.Suspend(func() {
+		// print command
+		s := name
+		if len(args) > 0 {
+			for _, a := range args {
+				s += " " + a
+			}
+		}
+		_, _ = fmt.Fprintln(os.Stdout, "> ", s)
+		// start command
 		cmd := exec.Command(name, args...)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		err := cmd.Run()
+		// print error
 		if err != nil {
-			exit(err)
-		}
-		if err = ui.Init(); err != nil {
-			exit(err)
+			fmt.Fprintln(os.Stdout)
+			fmt.Fprintln(os.Stdout, "exec error: ", err)
+			fmt.Fprintln(os.Stdout, "press any key to continue")
+			getchar()
 		}
 	})
-	// recover to Front
-	render()
 }
 
 // exit
