@@ -85,11 +85,11 @@ func parseServerFull(s string) *server {
 		return nil
 	}
 	return &server{
-		env:  sm[0],
-		host: sm[1],
-		port: sm[2],
-		user: sm[3],
-		desc: sm[4],
+		env:  sm[1],
+		host: sm[2],
+		port: sm[3],
+		user: sm[4],
+		desc: sm[5],
 	}
 }
 
@@ -102,8 +102,10 @@ func parseServerSimp(s string) *server {
 		return nil
 	}
 	return &server{
-		env:  sm[0],
-		host: sm[1],
-		desc: sm[2],
+		env:  sm[1],
+		host: sm[2],
+		port: "",
+		user: "",
+		desc: sm[3],
 	}
 }

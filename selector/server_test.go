@@ -9,5 +9,6 @@ func TestLoad(t *testing.T) {
 
 	t.Log(parseServerSimp("test    172.10.10.132   trade,redis,zookeeper"))
 
-	loadServers()
+	ss := loadServers()
+	t.Log(ss)
 }

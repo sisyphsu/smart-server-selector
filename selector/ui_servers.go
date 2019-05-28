@@ -135,7 +135,7 @@ func (s *ServersUI) render() {
 		user := forceWidth(s.user, 10)
 		port := forceWidth(s.port, 6)
 		desc := s.desc
-		row.SetText(fmt.Sprintf(" [yellow]> [green]%v %v %v %v %v", env, host, user, port, desc))
+		row.SetText(fmt.Sprintf(" [green]%v %v %v %v %v", env, host, user, port, desc))
 	}
 }
 

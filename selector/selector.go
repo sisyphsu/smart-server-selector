@@ -42,12 +42,9 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 	case tcell.KeyCtrlC:
 		exitFlag += 9 // exit
 	case tcell.KeyCtrlP:
-		execute("vim", configFile) // open editor
+		startVim() // open editor
 	case tcell.KeyEnter:
-		if view.offset < len(view.visible) {
-			s := view.visible[view.offset]
-			execute("ssh", s.host) // start ssh
-		}
+		startSSH()
 	}
 	if exitFlag > 1 {
 		app.Stop()
@@ -56,27 +53,44 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 	return event
 }
 
+// start vim subprocess
+func startVim() {
+	app.Suspend(func() {
+		execute("vim", configFile)
+		view.setServers(loadServers()) // reload
+	})
+}
+
+// start ssh subprocess
+func startSSH() {
+	if view.offset >= len(view.visible) {
+		return
+	}
+	app.Suspend(func() {
+		s := view.visible[view.offset]
+		execute("ssh", s.host)
+	})
+}
+
 // execute the specified command
 func execute(name string, args ...string) {
-	app.Suspend(func() {
-		// print command
-		s := name
-		if len(args) > 0 {
-			for _, a := range args {
-				s += " " + a
-			}
+	// print command
+	s := name
+	if len(args) > 0 {
+		for _, a := range args {
+			s += " " + a
 		}
-		println(os.Stdout, "> ", s)
-		// start command
-		cmd := exec.Command(name, args...)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		err := cmd.Run()
-		// print error
-		if err != nil {
-			println(os.Stdout, "exec error: ", err)
-			println(os.Stdout, "press any key to continue")
-			getchar()
-		}
-	})
+	}
+	println(os.Stdout, "> ", s)
+	// start command
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	// print error
+	if err != nil {
+		println(os.Stdout, "exec error: ", err)
+		println(os.Stdout, "press any key to continue")
+		getchar()
+	}
 }
