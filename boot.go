@@ -1,17 +1,18 @@
 package main
 
 import (
-	ui "github.com/gizak/termui/v3"
+	"github.com/mattn/go-runewidth"
+	"github.com/rivo/tview"
 	"github.com/sisyphsu/server-selector/selector"
 )
 
 func main() {
-	// init ui
-	if err := ui.Init(); err != nil {
-		println("failed to initialize termui: ", err)
-	}
-	defer ui.Close()
+	runewidth.DefaultCondition.EastAsianWidth = false
+	app := tview.NewApplication()
 
-	// init draw
-	selector.Start()
+	selector.Start(app)
+
+	if err := app.Run(); err != nil {
+		panic(err)
+	}
 }

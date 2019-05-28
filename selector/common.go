@@ -1,7 +1,6 @@
 package selector
 
 import (
-	ui "github.com/gizak/termui/v3"
 	"os/user"
 )
 
@@ -12,18 +11,6 @@ var configFile = ".sss"
 func init() {
 	u, _ := user.Current()
 	configFile = u.HomeDir + "/" + configFile
-}
-
-var hintsStr = []string{
-	"  [Ctrl+C] exit",
-	"  [Ctrl+P] edit",
-	"      [Up] prev",
-	"    [Down] next",
-	"     [Tab] switch",
-	"     [Esc] clear",
-	"     [Del] delete",
-	"   [Enter] confirm",
-	"      [....](fg-white)    ",
 }
 
 var testServers = []server{
@@ -42,33 +29,4 @@ var testServers = []server{
 
 func loadServers() []server {
 	return testServers
-}
-
-var EventHandler []func(ui.Event)
-
-func termWidth() int {
-	w, _ := ui.TerminalDimensions()
-	return w
-}
-
-func termHeight() int {
-	_, h := ui.TerminalDimensions()
-	return h
-}
-
-type servers []server
-
-func (a servers) Len() int      { return len(a) }
-func (a servers) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-func (a servers) Less(i, j int) bool {
-	if a[i].score != a[j].score {
-		return a[i].score < a[j].score
-	}
-	if a[i].env != a[j].env {
-		return a[i].env < a[j].env
-	}
-	if a[i].host != a[j].host {
-		return a[i].host < a[j].host
-	}
-	return i < j
 }
