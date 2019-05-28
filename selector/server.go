@@ -1,5 +1,20 @@
 package selector
 
+import (
+	"fmt"
+	"io/ioutil"
+	"os/user"
+	"regexp"
+	"strings"
+)
+
+var configFile = ".sss"
+
+func init() {
+	u, _ := user.Current()
+	configFile = u.HomeDir + "/" + configFile
+}
+
 type server struct {
 	env   string
 	host  string
@@ -24,4 +39,71 @@ func (a serverArray) Less(i, j int) bool {
 		return a[i].host < a[j].host
 	}
 	return i < j
+}
+
+// load servers from config file.
+func loadServers() (arr []server) {
+	arr = make([]server, 0)
+	fs, _ := ioutil.ReadFile(configFile)
+	if len(fs) == 0 {
+		return
+	}
+	body := string(fs)
+	var errs []string
+	for _, line := range strings.Split(body, "\n") {
+		line = strings.TrimSpace(line)
+		if len(line) == 0 || line[0] == '#' || line[0] == '/' {
+			continue
+		}
+		s := parseServerFull(line)
+		if s == nil {
+			s = parseServerSimp(line)
+		}
+		if s != nil {
+			arr = append(arr, *s)
+		} else {
+			errs = append(errs, line)
+		}
+	}
+	if len(errs) > 0 {
+		fmt.Printf("some invalid config in file[%v]: \n", configFile)
+		for _, e := range errs {
+			println("> " + e)
+		}
+		println("press any key to continue")
+		getchar()
+	}
+	return
+}
+
+var fullPtn = regexp.MustCompile("^(\\w+)\\s+([\\w.]+)\\s+(\\d+)\\s+([\\w.]+)\\s+(.*)$")
+
+// parse server by full pattern
+func parseServerFull(s string) *server {
+	sm := fullPtn.FindStringSubmatch(s)
+	if len(sm) == 0 || len(sm) != 6 {
+		return nil
+	}
+	return &server{
+		env:  sm[0],
+		host: sm[1],
+		port: sm[2],
+		user: sm[3],
+		desc: sm[4],
+	}
+}
+
+var simpPtn = regexp.MustCompile("^(\\w+)\\s+([\\w.]+)\\s+(.*)$")
+
+// parse server by simple pattern
+func parseServerSimp(s string) *server {
+	sm := simpPtn.FindStringSubmatch(s)
+	if len(sm) == 0 || len(sm) != 4 {
+		return nil
+	}
+	return &server{
+		env:  sm[0],
+		host: sm[1],
+		desc: sm[2],
+	}
 }

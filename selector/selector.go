@@ -1,17 +1,16 @@
 package selector
 
 import (
-	"fmt"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 	"os"
 	"os/exec"
 )
 
+var sidebarWidth = 23
+var exitFlag = 0
 var app *tview.Application
 var view *ServersUI
-
-var exitFlag = 0
 
 // Start the selector's render loop
 func Start(a *tview.Application) {
@@ -50,7 +49,7 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 			execute("ssh", s.host) // start ssh
 		}
 	}
-	if exitFlag > 2 {
+	if exitFlag > 1 {
 		app.Stop()
 	}
 
@@ -67,7 +66,7 @@ func execute(name string, args ...string) {
 				s += " " + a
 			}
 		}
-		_, _ = fmt.Fprintln(os.Stdout, "> ", s)
+		println(os.Stdout, "> ", s)
 		// start command
 		cmd := exec.Command(name, args...)
 		cmd.Stdin = os.Stdin
@@ -75,21 +74,9 @@ func execute(name string, args ...string) {
 		err := cmd.Run()
 		// print error
 		if err != nil {
-			fmt.Fprintln(os.Stdout)
-			fmt.Fprintln(os.Stdout, "exec error: ", err)
-			fmt.Fprintln(os.Stdout, "press any key to continue")
+			println(os.Stdout, "exec error: ", err)
+			println(os.Stdout, "press any key to continue")
 			getchar()
 		}
 	})
-}
-
-// exit
-func exit(err error) {
-	if exitFlag < 2 {
-		return
-	}
-	if err != nil {
-		println("error: ", err)
-	}
-	exitFlag = 2
 }
