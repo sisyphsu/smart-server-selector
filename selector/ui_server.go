@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type ServersUI struct {
+type ServerUI struct {
 	flex *tview.Flex
 	rows []*row
 
@@ -18,12 +18,12 @@ type ServersUI struct {
 	all     []server
 }
 
-func newServersUI(all []server) *ServersUI {
+func newServersUI(all []server) *ServerUI {
 	flex := tview.NewFlex().SetDirection(tview.FlexRow)
 	flex.SetBorder(true).
 		SetBorderColor(tcell.ColorDarkCyan).
 		SetBackgroundColor(tcell.ColorBlack)
-	v := &ServersUI{flex: flex, all: all}
+	v := &ServerUI{flex: flex, all: all}
 
 	app.SetAfterDrawFunc(func(screen tcell.Screen) {
 		v.render()
@@ -32,7 +32,7 @@ func newServersUI(all []server) *ServersUI {
 	return v
 }
 
-func (s *ServersUI) onEvent(event *tcell.EventKey) bool {
+func (s *ServerUI) onEvent(event *tcell.EventKey) bool {
 	l := len(s.visible)
 	switch event.Key() {
 	case tcell.KeyDown, tcell.KeyTab, tcell.KeyPgDn: // select down
@@ -45,22 +45,22 @@ func (s *ServersUI) onEvent(event *tcell.EventKey) bool {
 	return false
 }
 
-func (s *ServersUI) setKeyword(kw string) {
+func (s *ServerUI) setKeyword(kw string) {
 	s.keyword = kw
 	s.selectOffset(0)
 }
 
-func (s *ServersUI) setServers(all []server) {
+func (s *ServerUI) setServers(all []server) {
 	s.all = all
 	s.selectOffset(0)
 }
 
-func (s *ServersUI) selectOffset(off int) {
+func (s *ServerUI) selectOffset(off int) {
 	s.offset = off
 	s.render()
 }
 
-func (s *ServersUI) flushVisible() {
+func (s *ServerUI) flushVisible() {
 	var kws = make([]string, 0)
 	for _, kw := range strings.Split(s.keyword, " ") {
 		kw = strings.TrimSpace(kw)
@@ -94,7 +94,7 @@ func (s *ServersUI) flushVisible() {
 	s.kws = kws
 }
 
-func (s *ServersUI) flushRows() {
+func (s *ServerUI) flushRows() {
 	_, _, _, height := s.flex.GetInnerRect()
 	for l := len(s.rows); l > height; {
 		l--
@@ -109,7 +109,7 @@ func (s *ServersUI) flushRows() {
 	}
 }
 
-func (s *ServersUI) render() {
+func (s *ServerUI) render() {
 	s.flushRows()
 	s.flushVisible()
 	servers := s.visible

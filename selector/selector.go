@@ -10,7 +10,7 @@ import (
 var sidebarWidth = 23
 var exitFlag = 0
 var app *tview.Application
-var view *ServersUI
+var view *ServerUI
 
 // Start the selector's render loop
 func Start(a *tview.Application) {
