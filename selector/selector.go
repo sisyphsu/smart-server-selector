@@ -91,7 +91,7 @@ func execute(name string, args ...string) {
 			s += " " + a
 		}
 	}
-	fmt.Println("> ", s)
+	fmt.Println(">", s)
 	// start command
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
@@ -99,7 +99,7 @@ func execute(name string, args ...string) {
 	err := cmd.Run()
 	// print error
 	if err != nil {
-		fmt.Println("> exec error: ", err.Error())
+		fmt.Println("> error:", err.Error())
 		fmt.Println("> press any key to continue")
 		getchar()
 	}
