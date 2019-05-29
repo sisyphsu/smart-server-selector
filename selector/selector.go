@@ -27,6 +27,7 @@ func Start(a *tview.Application) {
 		AddItem(topFlex, 3, 0, true).
 		AddItem(btmFlex, 0, 1, false)
 
+	flex.SetBackgroundColor(tcell.ColorBlack)
 	app.SetInputCapture(onKeyEvent)
 	app.SetRoot(flex, true)
 }
