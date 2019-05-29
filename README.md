@@ -50,7 +50,7 @@ After started, `smart-server-selector` will load servers from `~/.servers`, you 
 
 These two format configurations are valid:
 
-```pythom
+```python
 # comments, empty line is ok.
 test    10.10.10.1   description
 test    10.10.10.1   22     username   description
