@@ -5,7 +5,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-func buildKeywordUI() tview.Primitive {
+func buildSearchUI() tview.Primitive {
 	input := tview.NewInputField().
 		SetPlaceholder("env, host, desc...").
 		SetChangedFunc(view.setKeyword).SetFieldBackgroundColor(tcell.ColorBlack)

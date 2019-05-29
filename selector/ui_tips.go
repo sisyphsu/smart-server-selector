@@ -7,14 +7,14 @@ import (
 )
 
 var tips = [][]string{
+	{"Ctrl+P", "edit servers"},
+	{"Up", "switch previous"},
+	{"Down", "switch next"},
+	{"Shift+Tab", "switch previous"},
+	{"Tab", "switch to next"},
+	{"Enter", "confirm select"},
 	{"Ctrl+C", "exit"},
-	{"Ctrl+P", "edit"},
-	{"Up", "prev"},
-	{"Down", "next"},
-	{"Tab", "switch"},
-	{"Esc", "clear"},
-	{"Esc", "clear"},
-	{"Enter", "confirm"},
+	{"Esc+Esc", "exit"},
 }
 
 func buildTipsUI() tview.Primitive {
@@ -29,8 +29,8 @@ func buildTipsUI() tview.Primitive {
 		SetBorderColor(tcell.ColorDarkCyan)
 
 	for i, tip := range tips {
-		_, _ = fmt.Fprintf(l, "  [yellow]%v. [white]%v\n", i+1, tip[0])
-		_, _ = fmt.Fprintf(l, "     [green]%v\n", tip[1])
+		_, _ = fmt.Fprintf(l, " [yellow]%v. [white]%v\n", i+1, tip[0])
+		_, _ = fmt.Fprintf(l, "    [green]%v\n", tip[1])
 	}
 	return l
 }

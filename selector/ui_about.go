@@ -5,7 +5,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-func buildAboutUI() tview.Primitive {
+func buildAboutUI() *tview.TextView {
 	tx := tview.NewTextView()
 	tx.SetTitle("About")
 	tx.SetTitleColor(tcell.ColorDarkCyan)

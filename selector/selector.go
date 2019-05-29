@@ -19,7 +19,7 @@ func Start(a *tview.Application) {
 
 	topFlex := tview.NewFlex().SetDirection(tview.FlexColumn).
 		AddItem(buildAboutUI(), sidebarWidth, 0, false).
-		AddItem(buildKeywordUI(), 0, 1, true)
+		AddItem(buildSearchUI(), 0, 1, true)
 	btmFlex := tview.NewFlex().SetDirection(tview.FlexColumn).
 		AddItem(buildTipsUI(), sidebarWidth, 0, false).
 		AddItem(view.flex, 0, 1, false)
