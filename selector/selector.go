@@ -1,6 +1,7 @@
 package selector
 
 import (
+	"fmt"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 	"os"
@@ -68,7 +69,7 @@ func startSSH() {
 	}
 	app.Suspend(func() {
 		s := view.visible[view.offset]
-		cmds := []string{SshOptions}
+		var cmds []string
 		if len(s.port) > 0 {
 			cmds = append(cmds, "-p"+s.port)
 		}
@@ -90,7 +91,7 @@ func execute(name string, args ...string) {
 			s += " " + a
 		}
 	}
-	println(os.Stdout, "> ", s)
+	fmt.Println("> ", s)
 	// start command
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
@@ -98,8 +99,8 @@ func execute(name string, args ...string) {
 	err := cmd.Run()
 	// print error
 	if err != nil {
-		println(os.Stdout, "> exec error: ", err)
-		println(os.Stdout, "> press any key to continue")
+		fmt.Println("> exec error: ", err.Error())
+		fmt.Println("> press any key to continue")
 		getchar()
 	}
 }
