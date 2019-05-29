@@ -30,7 +30,7 @@ func newRow() *row {
 	}
 	r.flex.SetDirection(tview.FlexColumn)
 	r.flex.AddItem(r.env, 12, 1, false)
-	r.flex.AddItem(r.host, 36, 1, false)
+	r.flex.AddItem(r.host, 30, 1, false)
 	r.flex.AddItem(r.desc, 0, 10, false)
 
 	r.env.SetBackgroundColor(tcell.ColorDefault)

@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/mattn/go-runewidth"
 	"github.com/rivo/tview"
-	"github.com/sisyphsu/server-selector/selector"
+	"github.com/sisyphsu/smart-server-selector/selector"
 )
 
 func main() {
