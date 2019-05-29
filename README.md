@@ -80,7 +80,7 @@ Host *
         StrictHostKeyChecking no
 ```
 
-This way could keep the server-list clean, and no need to config `port` or `user` for every server.
+This way could keep the server-list clean, and no need to config `port` or `user` for each server.
 
 For more details, [check this link](https://www.ssh.com/ssh/config/).
 
