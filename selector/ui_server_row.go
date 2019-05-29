@@ -15,9 +15,9 @@ type row struct {
 func newRow() *row {
 	r := &row{
 		flex: tview.NewFlex(),
-		env:  tview.NewTextView().SetDynamicColors(true).SetTextColor(tcell.ColorGreen),
-		host: tview.NewTextView().SetDynamicColors(true).SetTextColor(tcell.ColorGreen),
-		desc: tview.NewTextView().SetDynamicColors(true).SetTextColor(tcell.ColorGreen),
+		env:  tview.NewTextView().SetDynamicColors(true).SetTextColor(tcell.ColorLawnGreen),
+		host: tview.NewTextView().SetDynamicColors(true).SetTextColor(tcell.ColorLawnGreen),
+		desc: tview.NewTextView().SetDynamicColors(true).SetTextColor(tcell.ColorLawnGreen),
 	}
 	r.flex.SetDirection(tview.FlexColumn)
 	r.flex.AddItem(r.env, 12, 1, false)
@@ -33,7 +33,7 @@ func newRow() *row {
 
 func (r *row) render(s *server, selected bool, keyword []string) {
 	if selected {
-		r.flex.SetBackgroundColor(tcell.ColorBlue)
+		r.flex.SetBackgroundColor(tcell.ColorRoyalBlue)
 	} else {
 		r.flex.SetBackgroundColor(tcell.ColorDefault)
 	}

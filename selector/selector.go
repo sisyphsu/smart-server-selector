@@ -7,7 +7,6 @@ import (
 	"os/exec"
 )
 
-var sidebarWidth = 23
 var exitFlag = 0
 var app *tview.Application
 var view *ServerUI
@@ -18,10 +17,10 @@ func Start(a *tview.Application) {
 	view = newServersUI(loadServers())
 
 	topFlex := tview.NewFlex().SetDirection(tview.FlexColumn).
-		AddItem(buildAboutUI(), sidebarWidth, 0, false).
+		AddItem(buildAboutUI(), SidebarWidth, 0, false).
 		AddItem(buildSearchUI(), 0, 1, true)
 	btmFlex := tview.NewFlex().SetDirection(tview.FlexColumn).
-		AddItem(buildTipsUI(), sidebarWidth, 0, false).
+		AddItem(buildTipsUI(), SidebarWidth, 0, false).
 		AddItem(view.flex, 0, 1, false)
 
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
@@ -56,7 +55,7 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 // start vim subprocess
 func startVim() {
 	app.Suspend(func() {
-		execute("vim", configFile)
+		execute("vim", SssFile)
 		view.setServers(loadServers()) // reload
 	})
 }
@@ -68,7 +67,16 @@ func startSSH() {
 	}
 	app.Suspend(func() {
 		s := view.visible[view.offset]
-		execute("ssh", s.host)
+		cmds := []string{SshOptions}
+		if len(s.port) > 0 {
+			cmds = append(cmds, "-p"+s.port)
+		}
+		if len(s.user) > 0 {
+			cmds = append(cmds, s.user+"@"+s.host)
+		} else {
+			cmds = append(cmds, s.host)
+		}
+		execute("ssh", cmds...)
 	})
 }
 

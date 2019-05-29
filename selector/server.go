@@ -3,17 +3,9 @@ package selector
 import (
 	"fmt"
 	"io/ioutil"
-	"os/user"
 	"regexp"
 	"strings"
 )
-
-var configFile = ".sss"
-
-func init() {
-	u, _ := user.Current()
-	configFile = u.HomeDir + "/" + configFile
-}
 
 type server struct {
 	env   string
@@ -44,7 +36,7 @@ func (a serverArray) Less(i, j int) bool {
 // load servers from config file.
 func loadServers() (arr []server) {
 	arr = make([]server, 0)
-	fs, _ := ioutil.ReadFile(configFile)
+	fs, _ := ioutil.ReadFile(SssFile)
 	if len(fs) == 0 {
 		return
 	}
@@ -66,7 +58,7 @@ func loadServers() (arr []server) {
 		}
 	}
 	if len(errs) > 0 {
-		fmt.Printf("some invalid config in file[%v]: \n", configFile)
+		fmt.Printf("some invalid config in file[%v]: \n", SssFile)
 		for _, e := range errs {
 			println("> " + e)
 		}
