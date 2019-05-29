@@ -45,7 +45,7 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 	case tcell.KeyEnter:
 		startSSH()
 	}
-	if exitFlag > 1 {
+	if exitFlag > 2 {
 		app.Stop()
 	}
 

@@ -14,7 +14,7 @@ var tips = [][]string{
 	{"Tab", "switch to next"},
 	{"Enter", "confirm select"},
 	{"Ctrl+C", "exit"},
-	{"Esc+Esc", "exit"},
+	{"Esc+Esc+Esc", "exit"},
 }
 
 func buildTipsUI() tview.Primitive {
