@@ -1,4 +1,4 @@
-module github.com/sisyphsu/server-selector
+module github.com/sisyphsu/smart-server-selector
 
 go 1.12
 
