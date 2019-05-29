@@ -1,2 +1,17 @@
-# server-selector
-multi-env and multi-servers selector
+# smart-server-selector
+
+# Demo
+
+![demo](./demo.gif)
+
+# Install
+
+TODO
+
+# Configuration
+
+TODO
+
+# License
+
+MIT
