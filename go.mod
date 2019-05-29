@@ -11,6 +11,7 @@ require (
 	github.com/gdamore/tcell v1.1.2
 	github.com/gizak/termui v2.3.0+incompatible
 	github.com/gizak/termui/v3 v3.0.0
+	github.com/karalabe/xgo v0.0.0-20190301120235-2d6d1848fb02 // indirect
 	github.com/maruel/panicparse v1.2.0 // indirect
 	github.com/mattn/go-runewidth v0.0.4
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect

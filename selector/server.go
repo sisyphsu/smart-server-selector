@@ -58,12 +58,12 @@ func loadServers() (arr []server) {
 		}
 	}
 	if len(errs) > 0 {
-		fmt.Printf("some invalid config in file[%v]: \n", SssFile)
-		for _, e := range errs {
-			println("> " + e)
+		fmt.Printf("> some invalid config in file[%v]: \n", SssFile)
+		for i, e := range errs {
+			fmt.Printf("> %v: %v \n", i+1, e)
 		}
-		println("press any key to continue")
-		getchar()
+		fmt.Println("> press any key to continue")
+		getChar()
 	}
 	return
 }

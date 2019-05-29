@@ -97,8 +97,8 @@ func execute(name string, args ...string) {
 	err := cmd.Run()
 	// print error
 	if err != nil {
-		println(os.Stdout, "exec error: ", err)
-		println(os.Stdout, "press any key to continue")
-		getchar()
+		println(os.Stdout, "> exec error: ", err)
+		println(os.Stdout, "> press any key to continue")
+		getChar()
 	}
 }
