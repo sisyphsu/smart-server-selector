@@ -3,7 +3,7 @@
 `smart-server-selector` is an efficiency terminal tool for backend system development engineer,
 especially for someone who have bunch of servers to switch.
 
-It was developed with `golang`, which means it's very clean, no dependency, cross-platform.
+It was developed with `golang`, which means it's very clean, no dependency and cross-platform.
 
 In terms of features, it support keyword search, which could help you find server by hostname, ip, description, etc quickly.
 
@@ -31,15 +31,12 @@ You can use `wget` or `curl` download it, example for `linux-amd64`:
 
 ```bash
 wget https://github.com/sisyphsu/smart-server-selector/releases/download/{version}/smart-server-selector-linux-amd64
-
 curl https://github.com/sisyphsu/smart-server-selector/releases/download/{version}/smart-server-selector-linux-amd64 > smart-server-selector-linux-amd64 
-
 chmod +x smart-server-selector-linux-amd64
-
 mv smart-server-selector-linux-amd64 ~/.local/bin/sss 
 ```
 
-Above steps download the `smart-server-selector` in to `~/.local/bin`, and name it `sss`, 
+Above steps download the `smart-server-selector` into `~/.local/bin`, and name it `sss`, 
 which is more convenient for keyboard inputting. 
 
 You should add `~/.local/bin` directory into your `$PATH`, or using other `PATH` directory, 
@@ -53,7 +50,7 @@ After started, `smart-server-selector` will load servers from `~/.servers`, you 
 
 These two format configurations are valid:
 
-```base
+```pythom
 # comments, empty line is ok.
 test    10.10.10.1   description
 test    10.10.10.1   22     username   description
@@ -74,7 +71,7 @@ If your configuration is invalid, `smart-server-selector` will ignore it and pri
 If your server's `ssh port` or `ssh username` don't match the default value, 
 then you should config it in global ssh config(`~/.ssh/config`), for example:
 
-```bash
+```python
 Host *
         Port 9876
         User other-name
@@ -87,6 +84,11 @@ This way could keep the server-list clean, and no need to config `port` or `user
 
 For more details, [check this link](https://www.ssh.com/ssh/config/).
 
+# Thanks
+
+UI powered by [tview](https://github.com/rivo/tview) and [tcell](https://github.com/gdamore/tcell).
+
 # License
 
 MIT
+
