@@ -83,6 +83,12 @@ func (s *ServerUI) flushVisible() {
 			if strings.Contains(strings.ToLower(server.desc), kw) {
 				server.score += 100
 			}
+			if strings.Contains(strings.ToLower(server.port), kw) {
+				server.score += 10
+			}
+			if strings.Contains(strings.ToLower(server.user), kw) {
+				server.score += 1
+			}
 		}
 		if server.score > 0 || len(kws) == 0 {
 			result = append(result, server)

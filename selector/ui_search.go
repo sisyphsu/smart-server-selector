@@ -5,16 +5,18 @@ import (
 	"github.com/rivo/tview"
 )
 
-func buildSearchUI() tview.Primitive {
-	input := tview.NewInputField().
+var searchInput *tview.InputField
+
+func buildSearchUI() *tview.InputField {
+	searchInput = tview.NewInputField().
 		SetPlaceholder("env, host, desc...").
 		SetChangedFunc(view.setKeyword).SetFieldBackgroundColor(tcell.ColorBlack)
-	input.SetBorder(true).
+	searchInput.SetBorder(true).
 		SetBorderAttributes(tcell.AttrNone).
 		SetBorderColor(tcell.ColorDarkCyan)
-	input.SetTitle("Search").
+	searchInput.SetTitle("Search").
 		SetTitleColor(tcell.ColorDarkCyan).
 		SetTitleAlign(tview.AlignLeft)
 
-	return input
+	return searchInput
 }

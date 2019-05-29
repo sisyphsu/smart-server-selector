@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-var exitFlag = 0
+var exited bool
 var app *tview.Application
 var view *ServerUI
 
@@ -37,15 +37,15 @@ func onKeyEvent(event *tcell.EventKey) *tcell.EventKey {
 	}
 	switch event.Key() {
 	case tcell.KeyEscape:
-		exitFlag += 1
-	case tcell.KeyCtrlC:
-		exitFlag += 9 // exit
+		searchInput.SetText("")
+	case tcell.KeyCtrlC, tcell.KeyCtrlD:
+		exited = true // exit
 	case tcell.KeyCtrlP:
 		startVim() // open editor
 	case tcell.KeyEnter:
 		startSSH()
 	}
-	if exitFlag > 2 {
+	if exited {
 		app.Stop()
 	}
 
