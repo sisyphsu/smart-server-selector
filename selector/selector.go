@@ -99,6 +99,6 @@ func execute(name string, args ...string) {
 	if err != nil {
 		println(os.Stdout, "> exec error: ", err)
 		println(os.Stdout, "> press any key to continue")
-		getChar()
+		getchar()
 	}
 }

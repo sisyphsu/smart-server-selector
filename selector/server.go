@@ -63,7 +63,7 @@ func loadServers() (arr []server) {
 			fmt.Printf("> %v: %v \n", i+1, e)
 		}
 		fmt.Println("> press any key to continue")
-		getChar()
+		getchar()
 	}
 	return
 }
